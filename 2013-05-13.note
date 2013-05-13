@@ -1,0 +1,26 @@
+* git 版本库
+** 创建版本库
+   git init <repo-dir>
+** 添加
+   git add <file>
+** 提交
+   git commit
+** 查找版本库
+   git grep "content"
+** 显示版本库.git目录所在位置
+   git rev-parse --git-dir
+** 显示工作区根目录
+   git rev-parse --show-toplevel
+** 相对于工作区根的路径
+   git rev-parse --show-prefix
+** 路径相对深度
+   git rev-parse --show-cdup
+** 配置修改
+   git config --system 系统
+   git config --global 用户
+   git config <setction>.<key> <value> 配置当前版本库
+** 提交
+   * git commit --amend --alow-empty --reset-author
+   * 参数 --amend 对刚刚的提交修补，不会产生新提交
+   * 参数 --allow-empty 允许空白提交
+   * 参数 --reset-author 同步修改Author ID,否则只修改Commit ID
