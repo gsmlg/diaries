@@ -1,0 +1,125 @@
+* 版本控制
+  * 基本：使用diff和patch
+    * diff 比较两个文件并输出重定向：
+    $ diff -u hello world > diff.txt
+    * patch 命令patch相当于diff的反操作
+    用 hello 覆盖 world
+    $ cp hellow world
+    用patch恢复
+    $ patch world < diff.txt
+    反向恢复
+    $ patch -R hello < diff.txt
+    * diff 和 patch 还可以对目录进行比较操作
+    * 缺陷： 不能比较二进制文件
+* CVS 版本控制大爆发
+  * CVS (Concurrent Versions System) 诞生于1985年 荷兰 阿姆斯特丹 VU 大学
+    Dick Grune 教授实现 1986 年发布 1989 年由 Brian Berliner 重写
+
+* SVN 集中式版本控制的集大成者
+  * 因为设计的问题，不可以在根目录下创建版本
+  * 创建三个顶级目录 /trunk /tags /branches
+  * 创建里程碑和分支会破坏授权
+    SVN 授权是基于目录的 每次创建分支要重新授权
+
+* Git 分布试版本控制系统
+  * 分布式
+  * 快速
+
+* 重写提交说明
+  * SVN
+    SVN 默认禁止 因为提交说明不受版本控制，不可恢复
+    建议SVN管理员只有在配置了版本库更改的外发邮件后，再开放提交说明更改功能
+    $ svn ps --revprop -r <REV> svn:log "new log message ... "
+  * Giv
+    Git 提交修改相对简单，Git修改说明可以被追踪
+    修补提交的命令：
+    $ git commit --amend
+    命令如不带-m参数，会进入编辑界面，修改
+    修改历史提交，git用变基命令：
+    $ git rebase -i <commit-id>^
+
+* 错误加入文件
+  * SVN
+    1. 如果没有历史备份，svndamin dump出整个版本库
+    2. 用svndumpfilter命令过滤不应检入的大文件
+    3. 用svnadmin load重建版本库
+  * Git
+    $ git rm --cached winxp.img
+    $ git commit --ammend
+    历史版本：
+    $ git rebase -i <commit-id>^
+
+* 提交列表
+  * SVN
+    SVN 1.5 开始 svn changelist 来实现
+    鸡肋
+  * Git
+    通过提交暂存区实现对内容的提交定制
+    执行git add将文件加入提交暂存区
+    执行git add -u 将所有修改过的文件加入暂存区
+    -A 将本地删除文件和新增文件都登记入暂存区
+    -p 对一个文件内修改进行选择性添加
+    添加后的修改不会被提交，除非再次git add
+    执行git commit命令提交，
+    支持撤销提交，可以撤销任意多次
+
+* Git 更好的差异比较
+  对GNU的diff和patch进行了补充，支持二进制文件差异比较
+  行内比较 --word-diff 逐字比较
+
+* 工作进度保存
+  * SVN
+    规模不大时，重新检出。否则如下
+    $ svn diff > /path/to/saved/patch.file
+    $ svn revert -R
+    $ svn switch <new_branch>
+    新分支工作完毕后，切换回当前分支
+    $ svn switch <original_branch>
+    $ patch -pl < /patch/to/saved/patch.file
+  * Git
+    提供了一个可以保存和恢复工作进度的命令git stash
+    $ git stash
+    $ git checkout <new_branch>
+    切回当前分支
+    $ git checkout <orignal_branch>
+    $ git stash pop
+
+* Git 代理SVN提交实现移动式办公
+  * 将svn克隆为一个本地git库
+    $ git svn clone <svn_repos_url>
+    用git命令操作本地克隆的版本库，提交就用git commit
+    提交svn时
+    $ git svn fetch
+    $ git svn rebase
+    $ git svn dcommit
+
+
+* 安装Git
+  软件包名： git git-core git-doc git-svn git-email git-gui gitk
+  git help -w <sub-command> 打开html帮助
+
+  源码编译：
+  $ git clone git://git.kernel.org/pub/scm/git/git.git
+  $ cd git
+  $ git fetch
+  $ git clean -fdx
+  $ git reset --hard
+  $ git tag
+  <version like v1.7.4.1>
+  $ git checkout v1.7.4.1
+  $ make prefix=/usr/local all doc info
+  $ sudo make prefix=/usr/local install install install-html install-info
+  将源码中的命令补齐脚本复制到bash-completion中
+  $ cp contrib/completion/git-completion.bash /etc/bash_completion.d/
+  加载shell
+  $ . /etc/bash_completion
+  * 开机时确保启动bash_completion在启动脚本中加入
+    if [ -f /etc/bash_completion ]; then
+        . /etc/bash_complection
+    fi
+
+  提交说明的文字字符集问题
+  $ git config --global i18n.logOutputEncoding gbk
+  标注提交说明字符集
+  $ git config --global i18n.commitEncoding gbk
+
