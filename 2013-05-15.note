@@ -1,0 +1,6 @@
+* emacs
+** 编码转换
+   * 当前文件转换
+     C-x C-m f utf-8-unix RET
+   * 另存为指定编码
+     C-x C-m c RET C-x C-w RET
